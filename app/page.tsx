@@ -114,34 +114,55 @@ export default function DatePicker() {
 	}
 
 	return (
-		<Card className="w-full max-w-md mx-auto">
-			<CardHeader>
-				<CardTitle className="text-center">Improved Date Picker</CardTitle>
-			</CardHeader>
-			<CardContent>
-				<div className="text-2xl font-bold text-center mb-4">
-					{`${currentDate.month} ${currentDate.day}, ${currentDate.year}`}
-				</div>
-				<div className="text-xl font-semibold text-center mb-4">
-					Select the correct {currentStep}:
-				</div>
-				<div className="text-lg text-center mb-4">
-					{currentStep === "month" && `Is it ${currentDate.month}?`}
-					{currentStep === "day" && `Is it ${currentDate.day}?`}
-					{currentStep === "year" && `Is it ${currentDate.year}?`}
-				</div>
-				<div className="flex justify-center space-x-4">
-					<Button variant="outline" onClick={() => handleGuess("earlier")}>
-						Earlier
-					</Button>
-					<Button variant="default" onClick={() => handleGuess("correct")}>
-						Correct
-					</Button>
-					<Button variant="outline" onClick={() => handleGuess("later")}>
-						Later
-					</Button>
-				</div>
-			</CardContent>
-		</Card>
+		<div className="min-h-screen flex items-center justify-center bg-purple-100 p-4">
+			<Card className="w-full max-w-md mx-auto bg-white shadow-lg">
+				<CardHeader className="bg-purple-900 text-white rounded-t-lg">
+					<CardTitle className="text-center text-2xl font-bold">
+						Silly Date Picker
+					</CardTitle>
+				</CardHeader>
+				<CardContent className="p-6 bg-purple-50">
+					<div className="text-3xl font-bold text-center mb-6 text-purple-800">
+						{`${currentDate.month} ${currentDate.day}, ${currentDate.year}`}
+					</div>
+					<div className="space-y-4">
+						<div className="text-lg text-center text-purple-700">
+							<span className="font-semibold">
+								Select the correct {currentStep}:
+							</span>
+							<br />
+							<span className="text-2xl font-bold text-purple-900">
+								{currentStep === "month" && `Is it ${currentDate.month}?`}
+								{currentStep === "day" && `Is it ${currentDate.day}?`}
+								{currentStep === "year" && `Is it ${currentDate.year}?`}
+							</span>
+						</div>
+						<div className="flex justify-center space-x-4">
+							<Button
+								variant="outline"
+								onClick={() => handleGuess("earlier")}
+								className="bg-purple-100 text-purple-700 border-purple-300 hover:bg-purple-200 hover:text-purple-800 transition-colors"
+							>
+								Earlier
+							</Button>
+							<Button
+								variant="default"
+								onClick={() => handleGuess("correct")}
+								className="bg-purple-600 text-white hover:bg-purple-700 transition-colors"
+							>
+								Correct
+							</Button>
+							<Button
+								variant="outline"
+								onClick={() => handleGuess("later")}
+								className="bg-purple-100 text-purple-700 border-purple-300 hover:bg-purple-200 hover:text-purple-800 transition-colors"
+							>
+								Later
+							</Button>
+						</div>
+					</div>
+				</CardContent>
+			</Card>
+		</div>
 	)
 }
