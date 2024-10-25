@@ -2,6 +2,17 @@
 
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+	Dialog,
+	DialogContent,
+	DialogFooter,
+	DialogHeader,
+	DialogTitle,
+	DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Settings } from "lucide-react"
 import { useState } from "react"
 
 const monthMap = new Map([
@@ -55,6 +66,7 @@ export default function DatePicker() {
 	const [minYear, setMinYear] = useState(1900)
 	const [maxYear, setMaxYear] = useState(2100)
 	const [isDateSelected, setIsDateSelected] = useState(false)
+	const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
 	const guessedMonthString = monthMap.get(guessedMonth) ?? ""
 
@@ -154,19 +166,82 @@ export default function DatePicker() {
 		setMaxMonth(12)
 		setMinDay(1)
 		setMaxDay(31)
-		setMinYear(1900)
-		setMaxYear(2100)
 		setIsDateSelected(false)
+	}
+
+	function handleSettingsChange(e: React.ChangeEvent<HTMLInputElement>) {
+		const { name, value } = e.target
+		if (name === "minYear") {
+			setMinYear(Number(value))
+		} else if (name === "maxYear") {
+			setMaxYear(Number(value))
+		}
 	}
 
 	return (
 		<div className="min-h-screen flex items-center justify-center bg-purple-100 p-4">
-			<Card className="w-full max-w-md mx-auto bg-white shadow-lg">
+			<Card className="w-full max-w-md mx-auto bg-white shadow-lg relative">
 				<CardHeader className="bg-purple-600 text-white rounded-t-lg">
 					<CardTitle className="text-center text-2xl font-bold">
 						Standard Date Picker
 					</CardTitle>
 				</CardHeader>
+				<div className="absolute top-4 right-4">
+					<Dialog open={isSettingsOpen} onOpenChange={setIsSettingsOpen}>
+						<DialogTrigger asChild>
+							<Button
+								variant="outline"
+								size="icon"
+								className="bg-white hover:bg-gray-100 absolute top-2 right-2 flex items-center justify-center"
+							>
+								<Settings className="h-5 w-5 text-purple-600" />
+								<span className="sr-only">Open settings</span>
+							</Button>
+						</DialogTrigger>
+						<DialogContent className="sm:max-w-[425px]">
+							<DialogHeader>
+								<DialogTitle>Settings</DialogTitle>
+							</DialogHeader>
+							<div className="grid gap-4 py-4">
+								<div className="grid grid-cols-4 items-center gap-4">
+									<Label htmlFor="minYear" className="text-right">
+										Min Year
+									</Label>
+									<Input
+										id="minYear"
+										name="minYear"
+										type="number"
+										value={minYear}
+										onChange={handleSettingsChange}
+										className="col-span-3"
+									/>
+								</div>
+								<div className="grid grid-cols-4 items-center gap-4">
+									<Label htmlFor="maxYear" className="text-right">
+										Max Year
+									</Label>
+									<Input
+										id="maxYear"
+										name="maxYear"
+										type="number"
+										value={maxYear}
+										onChange={handleSettingsChange}
+										className="col-span-3"
+									/>
+								</div>
+							</div>
+							<DialogFooter>
+								<Button
+									type="submit"
+									onClick={() => setIsSettingsOpen(false)}
+									className="bg-purple-600 text-white hover:bg-purple-700 transition-colors"
+								>
+									Save Changes
+								</Button>
+							</DialogFooter>
+						</DialogContent>
+					</Dialog>
+				</div>
 				<CardContent className="p-6">
 					{!isDateSelected ? (
 						<div className="space-y-6">
