@@ -67,40 +67,71 @@ export default function DatePicker() {
 	function handleMonthGuess(guess: string) {
 		if (guess === "earlier") {
 			setMaxMonth(guessedMonth - 1)
-			setGuessedMonth(Math.floor((minMonth + guessedMonth - 1) / 2))
+			if (maxMonth - 1 === minMonth) {
+				setGuessedMonth(minMonth)
+				setCurrentStep("day")
+			} else {
+				setGuessedMonth(Math.floor((minMonth + guessedMonth - 1) / 2))
+			}
 		} else if (guess === "correct") {
-			setMaxDay(daysInMonthMap.get(guessedMonthString) ?? 31)
 			setCurrentStep("day")
 		} else if (guess === "later") {
 			setMinMonth(guessedMonth + 1)
-			setGuessedMonth(Math.ceil((guessedMonth + 1 + maxMonth) / 2))
+			if (minMonth + 1 === maxMonth) {
+				setGuessedMonth(maxMonth)
+				setCurrentStep("day")
+			} else {
+				setGuessedMonth(Math.ceil((guessedMonth + 1 + maxMonth) / 2))
+			}
 		}
 	}
 
 	function handleDayGuess(guess: string) {
-		const daysInMonth = daysInMonthMap.get(guessedMonthString) ?? 31
+		const daysInMonth =
+			daysInMonthMap.get(monthMap.get(guessedMonth) ?? "") ?? 31
+
 		if (guess === "earlier") {
 			setMaxDay(guessedDay - 1)
-			setGuessedDay(Math.floor((minDay + guessedDay - 1) / 2))
+			if (guessedDay - 1 === minDay) {
+				setGuessedDay(minDay)
+				setCurrentStep("year")
+			} else {
+				setGuessedDay(Math.floor((minDay + guessedDay - 1) / 2))
+			}
 		} else if (guess === "correct") {
 			setCurrentStep("year")
 		} else if (guess === "later") {
 			setMinDay(guessedDay + 1)
-			setGuessedDay(
-				Math.min(Math.ceil((guessedDay + 1 + maxDay) / 2), daysInMonth),
-			)
+			if (guessedDay + 1 === maxDay) {
+				setGuessedDay(maxDay)
+				setCurrentStep("year")
+			} else {
+				setGuessedDay(
+					Math.min(Math.ceil((guessedDay + 1 + maxDay) / 2), daysInMonth),
+				)
+			}
 		}
 	}
 
 	function handleYearGuess(guess: string) {
 		if (guess === "earlier") {
 			setMaxYear(guessedYear - 1)
-			setGuessedYear(Math.floor((minYear + guessedYear - 1) / 2))
+			if (guessedYear - 1 === minYear) {
+				setGuessedYear(minYear)
+				setIsDateSelected(true)
+			} else {
+				setGuessedYear(Math.floor((minYear + guessedYear - 1) / 2))
+			}
 		} else if (guess === "correct") {
 			setIsDateSelected(true)
 		} else if (guess === "later") {
 			setMinYear(guessedYear + 1)
-			setGuessedYear(Math.ceil((guessedYear + 1 + maxYear) / 2))
+			if (guessedYear + 1 === maxYear) {
+				setGuessedYear(maxYear)
+				setIsDateSelected(true)
+			} else {
+				setGuessedYear(Math.ceil((guessedYear + 1 + maxYear) / 2))
+			}
 		}
 	}
 
