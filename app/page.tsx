@@ -34,14 +34,6 @@ const daysInMonthMap = new Map([
 	["december", 31],
 ])
 
-const years = Array.from({ length: 201 }, (_, i) => i + 1900)
-
-interface DateInterface {
-	month: number
-	day: number
-	year: number
-}
-
 export default function DatePicker() {
 	const [guessedMonth, setGuessedMonth] = useState<number>(6)
 	const [guessedDay, setGuessedDay] = useState<number>(15)
@@ -71,6 +63,7 @@ export default function DatePicker() {
 			setMaxMonth(guessedMonth - 1)
 			setGuessedMonth(Math.floor((minMonth + guessedMonth - 1) / 2))
 		} else if (guess === "correct") {
+			setMaxDay(daysInMonthMap.get(monthMap.get(guessedMonth) ?? "") ?? 31)
 			setCurrentStep("day")
 		} else if (guess === "later") {
 			setMinMonth(guessedMonth + 1)
@@ -81,7 +74,6 @@ export default function DatePicker() {
 	function handleDayGuess(guess: string) {
 		const daysInMonth =
 			daysInMonthMap.get(monthMap.get(guessedMonth) ?? "") ?? 31
-
 		if (guess === "earlier") {
 			setMaxDay(guessedDay - 1)
 			setGuessedDay(Math.floor((minDay + guessedDay - 1) / 2))
