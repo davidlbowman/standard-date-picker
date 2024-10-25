@@ -1,101 +1,140 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState } from "react"
+
+const monthMap = new Map([
+	[1, "january"],
+	[2, "february"],
+	[3, "march"],
+	[4, "april"],
+	[5, "may"],
+	[6, "june"],
+	[7, "july"],
+	[8, "august"],
+	[9, "september"],
+	[10, "october"],
+	[11, "november"],
+	[12, "december"],
+])
+
+const daysInMonthMap = new Map([
+	["january", 31],
+	["february", 28],
+	["march", 31],
+	["april", 30],
+	["may", 31],
+	["june", 30],
+	["july", 31],
+	["august", 31],
+	["september", 30],
+	["october", 31],
+	["november", 30],
+	["december", 31],
+])
+
+const years = Array.from({ length: 201 }, (_, i) => i + 1900)
+
+interface DateInterface {
+	month: number
+	day: number
+	year: number
+}
+
+export default function DatePicker() {
+	const [guessedMonth, setGuessedMonth] = useState<number>(6)
+	const [guessedDay, setGuessedDay] = useState<number>(15)
+	const [guessedYear, setGuessedYear] = useState<number>(2024)
+	const [currentStep, setCurrentStep] = useState<"month" | "day" | "year">(
+		"month",
+	)
+	const [minMonth, setMinMonth] = useState(1)
+	const [maxMonth, setMaxMonth] = useState(12)
+
+	const guessedMonthString =
+		(monthMap.get(guessedMonth) ?? "").charAt(0).toUpperCase() +
+		(monthMap.get(guessedMonth) ?? "").slice(1)
+
+	const currentDate = {
+		month: guessedMonthString,
+		day: guessedDay,
+		year: guessedYear,
+	}
+
+	function handleMonthGuess(guess: string) {
+		if (guess === "earlier") {
+			setMaxMonth(guessedMonth - 1)
+			setGuessedMonth(Math.floor((minMonth + guessedMonth - 1) / 2))
+		} else if (guess === "correct") {
+			setCurrentStep("day")
+		} else if (guess === "later") {
+			setMinMonth(guessedMonth + 1)
+			setGuessedMonth(Math.ceil((guessedMonth + 1 + maxMonth) / 2))
+		}
+	}
+
+	function handleDayGuess(guess: string) {
+		if (guess === "earlier") {
+			setGuessedDay(guessedDay - 1)
+		} else if (guess === "correct") {
+			setGuessedDay(guessedDay)
+		} else if (guess === "later") {
+			setGuessedDay(guessedDay + 1)
+		}
+	}
+
+	function handleYearGuess(guess: string) {
+		if (guess === "earlier") {
+			setGuessedYear(guessedYear - 1)
+		} else if (guess === "correct") {
+			setGuessedYear(guessedYear)
+		} else if (guess === "later") {
+			setGuessedYear(guessedYear + 1)
+		}
+	}
+
+	function handleGuess(guess: string) {
+		if (currentStep === "month") {
+			handleMonthGuess(guess)
+			if (guess === "correct") setCurrentStep("day")
+		} else if (currentStep === "day") {
+			handleDayGuess(guess)
+			if (guess === "correct") setCurrentStep("year")
+		} else if (currentStep === "year") {
+			handleYearGuess(guess)
+		}
+	}
+
 	return (
-		<div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-			<main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-				<Image
-					className="dark:invert"
-					src="/next.svg"
-					alt="Next.js logo"
-					width={180}
-					height={38}
-					priority
-				/>
-				<ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-					<li className="mb-2">
-						Get started by editing{" "}
-						<code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-							app/page.tsx
-						</code>
-						.
-					</li>
-					<li>Save and see your changes instantly.</li>
-				</ol>
-
-				<div className="flex gap-4 items-center flex-col sm:flex-row">
-					<a
-						className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-						href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						<Image
-							className="dark:invert"
-							src="/vercel.svg"
-							alt="Vercel logomark"
-							width={20}
-							height={20}
-						/>
-						Deploy now
-					</a>
-					<a
-						className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-						href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-						target="_blank"
-						rel="noopener noreferrer"
-					>
-						Read our docs
-					</a>
+		<Card className="w-full max-w-md mx-auto">
+			<CardHeader>
+				<CardTitle className="text-center">Improved Date Picker</CardTitle>
+			</CardHeader>
+			<CardContent>
+				<div className="text-2xl font-bold text-center mb-4">
+					{`${currentDate.month} ${currentDate.day}, ${currentDate.year}`}
 				</div>
-			</main>
-			<footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-				<a
-					className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-					href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					<Image
-						aria-hidden
-						src="/file.svg"
-						alt="File icon"
-						width={16}
-						height={16}
-					/>
-					Learn
-				</a>
-				<a
-					className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-					href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					<Image
-						aria-hidden
-						src="/window.svg"
-						alt="Window icon"
-						width={16}
-						height={16}
-					/>
-					Examples
-				</a>
-				<a
-					className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-					href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					<Image
-						aria-hidden
-						src="/globe.svg"
-						alt="Globe icon"
-						width={16}
-						height={16}
-					/>
-					Go to nextjs.org →
-				</a>
-			</footer>
-		</div>
-	);
+				<div className="text-xl font-semibold text-center mb-4">
+					Select the correct {currentStep}:
+				</div>
+				<div className="text-lg text-center mb-4">
+					{currentStep === "month" && `Is it ${currentDate.month}?`}
+					{currentStep === "day" && `Is it ${currentDate.day}?`}
+					{currentStep === "year" && `Is it ${currentDate.year}?`}
+				</div>
+				<div className="flex justify-center space-x-4">
+					<Button variant="outline" onClick={() => handleGuess("earlier")}>
+						Earlier
+					</Button>
+					<Button variant="default" onClick={() => handleGuess("correct")}>
+						Correct
+					</Button>
+					<Button variant="outline" onClick={() => handleGuess("later")}>
+						Later
+					</Button>
+				</div>
+			</CardContent>
+		</Card>
+	)
 }
