@@ -51,6 +51,10 @@ export default function DatePicker() {
 	)
 	const [minMonth, setMinMonth] = useState(1)
 	const [maxMonth, setMaxMonth] = useState(12)
+	const [minDay, setMinDay] = useState(1)
+	const [maxDay, setMaxDay] = useState(31)
+	const [minYear, setMinYear] = useState(1900)
+	const [maxYear, setMaxYear] = useState(2100)
 
 	const guessedMonthString =
 		(monthMap.get(guessedMonth) ?? "").charAt(0).toUpperCase() +
@@ -75,22 +79,33 @@ export default function DatePicker() {
 	}
 
 	function handleDayGuess(guess: string) {
+		const daysInMonth =
+			daysInMonthMap.get(monthMap.get(guessedMonth) ?? "") ?? 31
+
 		if (guess === "earlier") {
-			setGuessedDay(guessedDay - 1)
+			setMaxDay(guessedDay - 1)
+			setGuessedDay(Math.floor((minDay + guessedDay - 1) / 2))
 		} else if (guess === "correct") {
-			setGuessedDay(guessedDay)
+			setCurrentStep("year")
 		} else if (guess === "later") {
-			setGuessedDay(guessedDay + 1)
+			setMinDay(guessedDay + 1)
+			setGuessedDay(
+				Math.min(Math.ceil((guessedDay + 1 + maxDay) / 2), daysInMonth),
+			)
 		}
 	}
 
 	function handleYearGuess(guess: string) {
 		if (guess === "earlier") {
-			setGuessedYear(guessedYear - 1)
+			setMaxYear(guessedYear - 1)
+			setGuessedYear(Math.floor((minYear + guessedYear - 1) / 2))
+			setCurrentStep("month")
 		} else if (guess === "correct") {
-			setGuessedYear(guessedYear)
+			// The year is correct, you might want to add some final action here
 		} else if (guess === "later") {
-			setGuessedYear(guessedYear + 1)
+			setMinYear(guessedYear + 1)
+			setGuessedYear(Math.ceil((guessedYear + 1 + maxYear) / 2))
+			setCurrentStep("month")
 		}
 	}
 
