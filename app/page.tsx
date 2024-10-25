@@ -34,6 +34,13 @@ const daysInMonthMap = new Map([
 	["December", 31],
 ])
 
+function getOrdinalDay(day: number): string {
+	const suffixes = ["th", "st", "nd", "rd"]
+	const relevantDigits = day < 30 ? day % 20 : day % 30
+	const suffix = relevantDigits <= 3 ? suffixes[relevantDigits] : suffixes[0]
+	return `${day}${suffix}`
+}
+
 export default function DatePicker() {
 	const [guessedMonth, setGuessedMonth] = useState<number>(6)
 	const [guessedDay, setGuessedDay] = useState<number>(15)
@@ -53,7 +60,7 @@ export default function DatePicker() {
 
 	const currentDate = {
 		month: guessedMonthString,
-		day: guessedDay,
+		day: getOrdinalDay(guessedDay),
 		year: guessedYear,
 	}
 
@@ -142,9 +149,9 @@ export default function DatePicker() {
 									</span>
 									<br />
 									<span className="text-2xl font-bold text-purple-900">
-										{currentStep === "month" && `Is it ${currentDate.month}?`}
-										{currentStep === "day" && `Is it ${currentDate.day}?`}
-										{currentStep === "year" && `Is it ${currentDate.year}?`}
+										{currentStep === "month" && `${currentDate.month}?`}
+										{currentStep === "day" && `${currentDate.day}?`}
+										{currentStep === "year" && `${currentDate.year}?`}
 									</span>
 								</div>
 								<div className="flex justify-center space-x-4">
